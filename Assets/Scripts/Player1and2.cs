@@ -179,17 +179,17 @@ public class Player1and2 : MonoBehaviour
         bool samePole =
             (magnetMode == MagnetMode.North && strongestMag.magnetPole == NoMoveMag.MagnetPole.North) ||
             (magnetMode == MagnetMode.South && strongestMag.magnetPole == NoMoveMag.MagnetPole.South);
-
+        /*
         if (samePole)
             rb.AddForce(-dir * 50f, ForceMode.Acceleration);
         else
             rb.AddForce(dir * 50f, ForceMode.Acceleration);
-        /*
+        */
         if (samePole)
             rb.AddForce(-dir * strongestMag.forcePower, ForceMode.Acceleration);
         else
             rb.AddForce(dir * strongestMag.forcePower, ForceMode.Acceleration);
-        */
+        
     }
 
     private void OnCollisionEnter(Collision collision)
