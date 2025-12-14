@@ -27,45 +27,64 @@ public class SmoothCameraFollow : MonoBehaviour
 
     [Header("揺れ設定")]
     public float shakeAmount = 0.03f;
-    public float shakeSpeed = 2f;
+    public float shakeSpeed = 1f;
 
     [Header("ズーム設定（ホイールドラッグ）")]
     public float zoomSensitivity = 1f;
     public float minDistance = 2f;
     public float maxDistance = 12f;
 
-    float zoomDistance = 6f; // 現在の距離（groundOffset.z の初期値に合わせる）
-    
+    [Header("カメラ衝突（すり抜け防止）")]
+    public float collideOffset = 0.2f;
+    public LayerMask collisionMask;
+
+    [Header("ダッシュ注目ターゲット")]
+    public Transform dashLookTarget;     // ←ここで設定！
+    public float dashLookSpeed = 6f;     // ターゲット方向へ向く速さ
+    public bool isDashing = false;       // 外部から切り替え（Shiftなど）
+
+    float zoomDistance = 6f;
 
     Rigidbody playerRb;
     Vector3 currentVelocity;
     Vector3 currentOffset;
 
-    float pitch;  // 上下角
-    float yaw;    // 左右角
+    float pitch;
+    float yaw;
     bool isMouseHeld = false;
 
     void Start()
     {
-        Cursor.visible = false;            // カーソルを消す
-        Cursor.lockState = CursorLockMode.Locked; // 画面中央に固定（FPS/TPS風）
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
 
         if (player != null)
             playerRb = player.GetComponent<Rigidbody>();
 
         currentOffset = groundOffset;
 
-        // 初期角度を設定
         Vector3 euler = transform.rotation.eulerAngles;
         pitch = euler.x;
         yaw = euler.y;
+    }
+
+    private void FixedUpdate()
+    {
+        // ダッシュ入力判定
+        if (Input.GetKey(KeyCode.LeftShift))
+        {
+            isDashing = true;
+        }
+        else
+        {
+            isDashing = false;
+        }
     }
 
     void LateUpdate()
     {
         if (player == null) return;
 
-        // --- 空中か地上かを判定 ---
         bool isInAir = playerRb != null && !IsGrounded();
 
         // --- カメラ角度補間 ---
@@ -77,16 +96,15 @@ public class SmoothCameraFollow : MonoBehaviour
         targetOffset.z = -zoomDistance;
         currentOffset = Vector3.Lerp(currentOffset, targetOffset, Time.deltaTime * moveSmooth);
 
-        // --- 中ボタン押しドラッグで距離変更 ---
+        // --- ズーム ---
         if (Input.GetMouseButton(2))
         {
             float mouseY = Input.GetAxis("Mouse Y");
-            zoomDistance += mouseY * zoomSensitivity * -1f; // 上ドラッグで手前、下で遠ざかる
-
+            zoomDistance += mouseY * zoomSensitivity * -1f;
             zoomDistance = Mathf.Clamp(zoomDistance, minDistance, maxDistance);
         }
 
-        // --- マウスクリック中だけ視点操作 ---
+        // --- 視点操作 ---
         if (Input.GetMouseButtonDown(1)) isMouseHeld = true;
         if (Input.GetMouseButtonUp(1)) isMouseHeld = false;
 
@@ -94,21 +112,63 @@ public class SmoothCameraFollow : MonoBehaviour
         {
             float mouseX = Input.GetAxis("Mouse X") * mouseSensitivity;
             float mouseY = Input.GetAxis("Mouse Y") * mouseSensitivity;
-
             yaw += mouseX;
             pitch -= mouseY;
             pitch = Mathf.Clamp(pitch, minPitch, maxPitch);
         }
 
-        // --- 目標位置 ---
         Vector3 targetPos = player.position + Quaternion.Euler(0, yaw, 0) * currentOffset;
+
+        // --- 衝突チェック ---
+        RaycastHit hit;
+        Vector3 dir = (targetPos - player.position).normalized;
+        float distance = currentOffset.magnitude;
+
+        if (Physics.Raycast(player.position, dir, out hit, distance, collisionMask))
+        {
+            float safeDist = hit.distance - collideOffset;
+            safeDist = Mathf.Clamp(safeDist, minDistance, distance);
+            targetPos = player.position + dir * safeDist;
+        }
+
+        Vector3 dirToCamera = (targetPos - player.position).normalized;
+        float distToCamera = Vector3.Distance(player.position, targetPos);
+
+        if (Physics.SphereCast(player.position, 0.3f, dirToCamera, out hit, distToCamera))
+        {
+            float safeDist = hit.distance - 0.1f;
+            safeDist = Mathf.Max(0.5f, safeDist);
+            targetPos = player.position + dirToCamera * safeDist;
+        }
+
+        // --- スムーズ追従 ---
         transform.position = Vector3.SmoothDamp(transform.position, targetPos, ref currentVelocity, 1f / moveSmooth);
 
-        // --- 目標回転 ---
-        Quaternion targetRot = Quaternion.Euler(pitch, yaw, 0);
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, Time.deltaTime * rotateSmooth);
+        // --- ★ダッシュ中の自動注目カメラ ---
+        if (isDashing && dashLookTarget != null && !isMouseHeld)
+        {
+            Vector3 lookDir = (dashLookTarget.position - transform.position).normalized;
+            Quaternion targetLookRot = Quaternion.LookRotation(lookDir);
 
-        // --- 微揺れ ---
+            transform.rotation = Quaternion.Slerp(
+                transform.rotation,
+                targetLookRot,
+                Time.deltaTime * dashLookSpeed
+            );
+
+            ApplyShake();
+            return;
+        }
+
+        // --- 通常回転 ---
+        Quaternion normalRot = Quaternion.Euler(pitch, yaw, 0);
+        transform.rotation = Quaternion.Slerp(transform.rotation, normalRot, Time.deltaTime * rotateSmooth);
+
+        ApplyShake();
+    }
+
+    void ApplyShake()
+    {
         float shakeX = (Mathf.PerlinNoise(Time.time * shakeSpeed, 0f) - 0.5f) * 2f * shakeAmount;
         float shakeY = (Mathf.PerlinNoise(0f, Time.time * shakeSpeed) - 0.5f) * 2f * shakeAmount;
         transform.position += new Vector3(shakeX, shakeY, 0f);

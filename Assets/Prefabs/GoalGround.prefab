@@ -63,7 +63,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: fdc1f6286b5aca641a1357370ad0af94, type: 2}
+  - {fileID: 2100000, guid: 5bb998726a9c0e04cb9c223487207be1, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -119,5 +119,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 0
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10

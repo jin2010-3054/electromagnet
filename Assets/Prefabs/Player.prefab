@@ -148,13 +148,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 0}
   image: {fileID: 0}
-  moveSpeed: 5
+  moveSpeed: 3
   jumpForce: 5
   downForce: 5
+  maxSpeed: 5
   cam: {fileID: 0}
   dashSpeed: 12
   maxJumpCount: 5
-  magnetForce: 50
   magnetRange: 5
   magnetMode: 0
   northColor: {r: 1, g: 0, b: 0, a: 1}

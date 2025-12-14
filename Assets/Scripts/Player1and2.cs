@@ -1,27 +1,27 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
 public class Player1and2 : MonoBehaviour
 {
-    [Header("ÉLÉÉÉìÉoÉXê›íË")]
+    [Header("„Ç≠„É£„É≥„Éê„ÇπË®≠ÂÆö")]
     public GameObject text;
     public GameObject image;
 
-    [Header("à⁄ìÆê›íË")]
+    [Header("ÁßªÂãïË®≠ÂÆö")]
     public float moveSpeed = 5f;
     public float jumpForce = 5f;
     public float downForce = 5f;
     public float maxSpeed = 10f;
     public Transform cam;
 
-    [Header("É_ÉbÉVÉÖê›íË")]
+    [Header("„ÉÄ„ÉÉ„Ç∑„É•Ë®≠ÂÆö")]
     public float dashSpeed = 12f;
 
-    [Header("ÉWÉÉÉìÉvê›íË")]
+    [Header("„Ç∏„É£„É≥„ÉóË®≠ÂÆö")]
     public int maxJumpCount = 2;
     private int jumpCount = 0;
 
-    [Header("é•óÕê›íË")]
+    [Header("Á£ÅÂäõË®≠ÂÆö")]
     public float magnetRange = 10f;
 
     Rigidbody rb;
@@ -30,7 +30,7 @@ public class Player1and2 : MonoBehaviour
     public enum MagnetMode { None, North, South }
     public MagnetMode magnetMode = MagnetMode.None;
 
-    [Header("êFê›íË")]
+    [Header("Ëâ≤Ë®≠ÂÆö")]
     public Color northColor = Color.blue;
     public Color southColor = Color.red;
 
@@ -51,18 +51,8 @@ public class Player1and2 : MonoBehaviour
 
     void FixedUpdate()
     {
-        /*
-        if (rend.material.color == originalColor)
-        {
-            MoveProcess();
-        }
-        */
-        //rb.velocity = new Vector3(0,0,0);
-
-
         ApplyMagneticForce();
         MoveProcess();
-
     }
 
     void Update()
@@ -71,11 +61,20 @@ public class Player1and2 : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Alpha2)) SetMagnetMode(MagnetMode.North);
         if (Input.GetKeyDown(KeyCode.Alpha3)) SetMagnetMode(MagnetMode.South);
 
-        // CÉLÅ[Ç≈ÉLÉÉÉìÉoÉXON/OFF
         if (Input.GetKeyDown(KeyCode.C))
         {
             if (text != null) text.SetActive(!text.activeSelf);
             if (image != null) image.SetActive(!image.activeSelf);
+        }
+
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            transform.position = Vector3.zero;
+        }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            transform.position =new Vector3(0,0,500);
         }
     }
 
@@ -123,24 +122,22 @@ public class Player1and2 : MonoBehaviour
             currentSpeed = dashSpeed;
 
         Vector3 vel = rb.velocity;
-        vel.x = moveDir.x * currentSpeed+ vel.x;
-        vel.z = moveDir.z * currentSpeed+ vel.z;
+        vel.x = moveDir.x * currentSpeed + vel.x;
+        vel.z = moveDir.z * currentSpeed + vel.z;
 
-        if (Input.GetKeyDown(KeyCode.Space) && jumpCount < maxJumpCount)
+        if (Input.GetKey(KeyCode.Space) && jumpCount < maxJumpCount)
         {
-            vel.y = jumpForce;
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             jumpCount++;
+            Debug.Log("„Ç∏„É£„É≥„Éó„Åó„ÅüÔºÅ");
         }
         else if (Input.GetKey(KeyCode.LeftShift))
         {
-            vel.y = -downForce;
+            maxSpeed = dashSpeed;
         }
 
-
-        if (vel.x > maxSpeed)
-        {
-            moveSpeed = maxSpeed;
-        }
+        vel.x = Mathf.Clamp(vel.x, -maxSpeed, maxSpeed);
+        vel.z = Mathf.Clamp(vel.z, -maxSpeed, maxSpeed);
 
         rb.velocity = vel;
     }
@@ -163,7 +160,7 @@ public class Player1and2 : MonoBehaviour
 
             if (dist > mag.range) continue;
 
-            float intensity = mag.forcePower / (dist * dist + 0.1f); // ãóó£ãt2èÊ
+            float intensity = mag.forcePower / (dist * dist + 0.1f);
             if (intensity > strongestValue)
             {
                 strongestValue = intensity;
@@ -179,40 +176,54 @@ public class Player1and2 : MonoBehaviour
         bool samePole =
             (magnetMode == MagnetMode.North && strongestMag.magnetPole == NoMoveMag.MagnetPole.North) ||
             (magnetMode == MagnetMode.South && strongestMag.magnetPole == NoMoveMag.MagnetPole.South);
-        /*
-        if (samePole)
-            rb.AddForce(-dir * 50f, ForceMode.Acceleration);
-        else
-            rb.AddForce(dir * 50f, ForceMode.Acceleration);
-        */
-        if (samePole)
-            rb.AddForce(-dir * strongestMag.forcePower, ForceMode.Acceleration);
-        else
-            rb.AddForce(dir * strongestMag.forcePower, ForceMode.Acceleration);
-        
+
+        float power = strongestMag.forcePower;
+
+        switch (strongestMag.magnetType)
+        {
+            case NoMoveMag.MagnetType.Normal:
+                if (samePole)
+                    rb.AddForce(-dir * power, ForceMode.Acceleration);
+                else
+                    rb.AddForce(dir * power, ForceMode.Acceleration);
+                break;
+
+            case NoMoveMag.MagnetType.AlwaysAttract:
+                rb.AddForce(dir * power, ForceMode.Acceleration);
+                break;
+
+            case NoMoveMag.MagnetType.AlwaysRepel:
+                rb.AddForce(-dir * power, ForceMode.Acceleration);
+                break;
+        }
+    }
+
+    private void OnTriggerEnter(Collider collision)
+    {
+        if (collision.gameObject.CompareTag("Ground") ||
+            collision.gameObject.CompareTag("NoMoveMagS") ||
+            collision.gameObject.CompareTag("NoMoveMagS"))
+        {
+            jumpCount = 0;
+            Debug.Log("„Ç∏„É£„É≥„Éó„Ç´„Ç¶„É≥„Éà„ÅåÔºê");
+        }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Ground") ||
-            collision.gameObject.CompareTag("NoMoveMagN") ||
-            collision.gameObject.CompareTag("NoMoveMagS"))
-            jumpCount = 0;
-
         if (collision.gameObject.CompareTag("Goal"))
         {
             if (text != null) text.SetActive(true);
             if (image != null) image.SetActive(true);
 
-            Debug.Log("ÉSÅ[ÉãÇµÇΩÅI");
+            Debug.Log("„Ç¥„Éº„É´„Åó„ÅüÔºÅ");
         }
     }
 
-    private void OnCollisionStay(Collision collision)
+    // „Éó„É¨„Ç§„É§„Éº„ÅÆÁ£ÅÂäõÁØÑÂõ≤„Çí„Ç∑„Éº„É≥„ÅßË¶ã„Åà„Çã„Çà„ÅÜ„Å´„Åô„Çã
+    private void OnDrawGizmosSelected()
     {
-        if (collision.gameObject.CompareTag("Ground") ||
-            collision.gameObject.CompareTag("NoMoveMagN") ||
-            collision.gameObject.CompareTag("NoMoveMagS"))
-            jumpCount = 0;
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, magnetRange);
     }
 }

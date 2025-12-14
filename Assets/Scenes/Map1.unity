@@ -170,8 +170,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 1
-  pullForce: 50
-  magnetRange: 2
+  forcePower: 40
+  range: 10
 --- !u!65 &7597236
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -291,8 +291,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 1
-  pullForce: 50
-  magnetRange: 2
+  forcePower: 40
+  range: 10
 --- !u!65 &47014354
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -412,8 +412,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 1
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &115799345
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -684,8 +684,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 2
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &166651115
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -805,8 +805,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 1
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &206825451
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -931,8 +931,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 0
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &269675206
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1052,8 +1052,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 1
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &302866277
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1278,8 +1278,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 2
-  pullForce: 50
-  magnetRange: 2
+  forcePower: 40
+  range: 10
 --- !u!65 &604631526
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1399,8 +1399,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 1
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &609236851
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1561,8 +1561,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 2
-  pullForce: 50
-  magnetRange: 2
+  forcePower: 40
+  range: 10
 --- !u!65 &938912084
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1682,8 +1682,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 1
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &1015316443
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1803,8 +1803,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 1
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &1159801570
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1924,8 +1924,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 1
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &1257626155
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2218,8 +2218,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 2
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &1394046085
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2339,8 +2339,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 1
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &1411032612
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2460,8 +2460,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 2
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &1433366968
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -2543,7 +2543,6 @@ GameObject:
   m_Component:
   - component: {fileID: 1622457848}
   - component: {fileID: 1622457847}
-  - component: {fileID: 1622457849}
   m_Layer: 0
   m_Name: Directional Light
   m_TagString: Untagged
@@ -2628,29 +2627,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!114 &1622457849
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1622457846}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 474bcb49853aa07438625e644c072ee6, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Version: 3
-  m_UsePipelineSettings: 1
-  m_AdditionalLightsShadowResolutionTier: 2
-  m_LightLayerMask: 1
-  m_RenderingLayers: 1
-  m_CustomShadowLayers: 0
-  m_ShadowLayerMask: 1
-  m_ShadowRenderingLayers: 1
-  m_LightCookieSize: {x: 1, y: 1}
-  m_LightCookieOffset: {x: 0, y: 0}
-  m_SoftShadowQuality: 0
 --- !u!1 &1726393012
 GameObject:
   m_ObjectHideFlags: 0
@@ -2686,13 +2662,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   text: {fileID: 1790179422}
   image: {fileID: 2145350118}
-  moveSpeed: 5
+  moveSpeed: 3
   jumpForce: 5
   downForce: 5
+  maxSpeed: 5
   cam: {fileID: 1753777056}
   dashSpeed: 12
   maxJumpCount: 3
-  magnetForce: 50
   magnetRange: 5
   magnetMode: 0
   northColor: {r: 1, g: 0, b: 0, a: 1}
@@ -2931,6 +2907,10 @@ MonoBehaviour:
   zoomSensitivity: 1
   minDistance: 2
   maxDistance: 12
+  collideOffset: 0.2
+  collisionMask:
+    serializedVersion: 2
+    m_Bits: 0
 --- !u!1 &1774357332
 GameObject:
   m_ObjectHideFlags: 0
@@ -3126,8 +3106,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 2
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &1887943098
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3247,8 +3227,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   magnetPole: 2
-  pullForce: 50
-  magnetRange: 5
+  forcePower: 40
+  range: 10
 --- !u!65 &1943729245
 BoxCollider:
   m_ObjectHideFlags: 0
